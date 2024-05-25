@@ -4,8 +4,8 @@ import shutil
 from PySide2.QtCore import  QThread, Signal
 from PySide2.QtWidgets import QDialog, QMessageBox
 
-from file_download_module import download_file
-from utils import calculate_md5
+from .file_download_module import download_file
+from .utils import calculate_md5
 from . import update_image_rc
 from .ui_winUpdate import Ui_Form
 
