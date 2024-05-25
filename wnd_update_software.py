@@ -5,7 +5,7 @@ from PySide2.QtCore import  QThread, Signal
 from PySide2.QtWidgets import QDialog, QMessageBox
 
 from .file_download_module import download_file
-from .utils import calculate_md5
+from .utils import calculate_md5, file_remove
 from . import update_image_rc
 from .ui_winUpdate import Ui_Form
 
@@ -78,14 +78,17 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         self.thd_download_file.start()
 
     def on_download_file_finish(self, download_result, save_path):
+        patcher_zip_path = save_path
         if not download_result:
             self.label_zt.setText("下载更新失败")
+            file_remove(patcher_zip_path)
             return
         # 校验压缩包md5
-        patcher_zip_path = save_path
         download_md5 = calculate_md5(patcher_zip_path)
+        print(f"计算出的md5: {download_md5}, 实际应该的md5: {self.md5}")
         if download_md5 != self.md5:
             self.label_zt.setText("补丁包下载不完整, 请重新下载")
+            file_remove(patcher_zip_path)
             return
         # 开始解压
         extract_folder_path = "./patcher"
@@ -99,8 +102,7 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         #     zf.extractall(extract_folder_path)
         shutil.unpack_archive(patcher_zip_path, extract_folder_path)
         print("解压完成")
-        msg_box = QMessageBox.information(self, "提示", "更新准备就绪, 请关闭软件后手动重启")
-        msg_box.exec_()
+        QMessageBox.information(self, "提示", "更新准备就绪, 请关闭软件后手动重启")
 
 
 class ThdDownloadFile(QThread):
