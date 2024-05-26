@@ -5,7 +5,10 @@ def download_file(url, save_path, callback_func=None):
     if callback_func:
         start_time = time.time()
     print('开始下载:', url)
-    r = requests.get(url, stream=True, verify=False)
+    r = requests.get(url, stream=True, verify=False, proxies={  # 忽略系统代理
+        'http': None,
+        'https': None
+    })
     with open(save_path, 'wb') as f:
         total_length = int(r.headers.get('content-length'))
         for chunk in r.iter_content(chunk_size=10 * 1024):
