@@ -1,5 +1,6 @@
 import os
 import shutil
+import webbrowser
 
 from PySide2.QtCore import  QThread, Signal
 from PySide2.QtWidgets import QDialog, QMessageBox
@@ -47,6 +48,22 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         self.textEdit.setPlainText(data.get('update_info'))
         self.patcher_download_url = data.get('patcher_download_url')
         self.md5 = data.get('md5')
+        self.force_update = data.get('force_update', False)
+        if self.force_update:
+            if self.patcher_download_url:  
+                # 如果提供了下载链接，说明是安装包的，要浏览器打开下载
+                self.label_2.setText("版本过低无法打补丁，请下载新的安装包直接覆盖安装一遍")
+                self.pushButton_azgx.hide()
+                self.pushButton_tgbb.hide()
+                self.pushButton_ok.show()
+                QMessageBox.information(
+                    self, '版本号过低无法打补丁', '请到浏览器下载新的安装包, 点击确定后自动前往下载页面')
+                webbrowser.open(self.patcher_download_url)
+                return
+            else:
+                # 如果没有提供下载链接，说明该版本已废弃
+                self.label_2.setText("该版本已废弃")
+            return
 
         if latest_version == self.client_version or latest_version == '':
             self.label_2.setText("你使用的是最新版本")
