@@ -57,7 +57,7 @@ class WndUpdateSoftware(QDialog, Ui_Form):
                 self.pushButton_tgbb.hide()
                 self.pushButton_ok.show()
                 QMessageBox.information(
-                    self, '版本号过低无法打补丁', '请到浏览器下载新的安装包, 点击确定后自动前往下载页面')
+                    self, '版本号过低无法打补丁', '请到浏览器下载新的安装包, 点击OK后自动前往下载页面')
                 webbrowser.open(self.patcher_download_url)
                 return
             else:
