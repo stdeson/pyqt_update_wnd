@@ -135,7 +135,7 @@ p, li { white-space: pre-wrap; }
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QPushButton" name="pushButton_tgbb">
+        <widget class="QPushButton" name="btn_tgbb">
          <property name="text">
           <string>跳过版本</string>
          </property>
@@ -155,7 +155,7 @@ p, li { white-space: pre-wrap; }
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_azgx">
+        <widget class="QPushButton" name="btn_azgx">
          <property name="text">
           <string>安装更新</string>
          </property>
@@ -174,7 +174,7 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_ok">
+        <widget class="QPushButton" name="btn_ok">
          <property name="text">
           <string>确定</string>
          </property>

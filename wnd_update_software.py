@@ -18,20 +18,24 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         self.setupUi(self)
         self.setWindowTitle('软件更新')
         self.resize(600, 360)
-
+        
+        self.btn_azgx.setFixedSize(80, 25)
+        self.btn_tgbb.setFixedSize(80, 25)
+        self.btn_ok.setFixedSize(80, 25)
+        
         # 绑定按钮事件
-        self.pushButton_azgx.clicked.connect(self.install_update)
-        self.pushButton_tgbb.clicked.connect(self.close)
-        self.pushButton_ok.clicked.connect(self.close)
+        self.btn_azgx.clicked.connect(self.install_update)
+        self.btn_tgbb.clicked.connect(self.close)
+        self.btn_ok.clicked.connect(self.close)
 
         # 隐藏更新进度条和状态编辑框
         self.progressBar.hide()
         self.progressBar.setValue(0)
         self.progressBar.setRange(0, 100)
         self.label_zt.hide()
-        self.pushButton_ok.hide()
-        self.pushButton_azgx.setEnabled(False)
-        self.pushButton_tgbb.setEnabled(False)
+        self.btn_ok.hide()
+        self.btn_azgx.setEnabled(False)
+        self.btn_tgbb.setEnabled(False)
         # textEdit 禁止编辑
         self.textEdit.setReadOnly(True)
         self.textEdit.setText("正在检查更新...")
@@ -53,9 +57,9 @@ class WndUpdateSoftware(QDialog, Ui_Form):
             if self.patcher_download_url:  
                 # 如果提供了下载链接，说明是安装包的，要浏览器打开下载
                 self.label_2.setText("版本过低无法打补丁，请下载新的安装包直接覆盖安装一遍")
-                self.pushButton_azgx.hide()
-                self.pushButton_tgbb.hide()
-                self.pushButton_ok.show()
+                self.btn_azgx.hide()
+                self.btn_tgbb.hide()
+                self.btn_ok.show()
                 QMessageBox.information(
                     self, '版本号过低无法打补丁', '请到浏览器下载新的安装包, 点击OK后自动前往下载页面')
                 webbrowser.open(self.patcher_download_url)
@@ -67,13 +71,13 @@ class WndUpdateSoftware(QDialog, Ui_Form):
 
         if latest_version == self.client_version or latest_version == '':
             self.label_2.setText("你使用的是最新版本")
-            self.pushButton_azgx.hide()
-            self.pushButton_tgbb.hide()
-            self.pushButton_ok.show()
+            self.btn_azgx.hide()
+            self.btn_tgbb.hide()
+            self.btn_ok.show()
             return
 
-        self.pushButton_azgx.setEnabled(True)
-        self.pushButton_tgbb.setEnabled(True)
+        self.btn_azgx.setEnabled(True)
+        self.btn_tgbb.setEnabled(True)
         self.label_2.setText("发现新版本")
         self.show()
 
@@ -81,8 +85,8 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         self.progressBar.show()
         self.label_zt.show()
         self.label_zt.setText('更新中...')
-        self.pushButton_azgx.setEnabled(False)
-        self.pushButton_tgbb.setEnabled(False)
+        self.btn_azgx.setEnabled(False)
+        self.btn_tgbb.setEnabled(False)
 
         self.thd_download_file = ThdDownloadFile(
             download_url=self.patcher_download_url,

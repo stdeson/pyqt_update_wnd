@@ -94,28 +94,28 @@ class Ui_Form(object):
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.pushButton_tgbb = QPushButton(Form)
-        self.pushButton_tgbb.setObjectName(u"pushButton_tgbb")
+        self.btn_tgbb = QPushButton(Form)
+        self.btn_tgbb.setObjectName(u"btn_tgbb")
 
-        self.horizontalLayout.addWidget(self.pushButton_tgbb)
+        self.horizontalLayout.addWidget(self.btn_tgbb)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
-        self.pushButton_azgx = QPushButton(Form)
-        self.pushButton_azgx.setObjectName(u"pushButton_azgx")
-        self.pushButton_azgx.setCheckable(False)
-        self.pushButton_azgx.setAutoDefault(True)
-        self.pushButton_azgx.setFlat(False)
+        self.btn_azgx = QPushButton(Form)
+        self.btn_azgx.setObjectName(u"btn_azgx")
+        self.btn_azgx.setCheckable(False)
+        self.btn_azgx.setAutoDefault(True)
+        self.btn_azgx.setFlat(False)
 
-        self.horizontalLayout.addWidget(self.pushButton_azgx)
+        self.horizontalLayout.addWidget(self.btn_azgx)
 
-        self.pushButton_ok = QPushButton(Form)
-        self.pushButton_ok.setObjectName(u"pushButton_ok")
-        self.pushButton_ok.setAutoDefault(False)
+        self.btn_ok = QPushButton(Form)
+        self.btn_ok.setObjectName(u"btn_ok")
+        self.btn_ok.setAutoDefault(False)
 
-        self.horizontalLayout.addWidget(self.pushButton_ok)
+        self.horizontalLayout.addWidget(self.btn_ok)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout)
@@ -126,8 +126,8 @@ class Ui_Form(object):
 
         self.retranslateUi(Form)
 
-        self.pushButton_azgx.setDefault(True)
-        self.pushButton_ok.setDefault(False)
+        self.btn_azgx.setDefault(True)
+        self.btn_ok.setDefault(False)
 
 
         QMetaObject.connectSlotsByName(Form)
@@ -145,8 +145,8 @@ class Ui_Form(object):
 "</style></head><body style=\" font-family:'SimSun'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
         self.label_zt.setText(QCoreApplication.translate("Form", u"\u6587\u4ef6\u5927\u5c0f \u4e0b\u8f7d\u901f\u5ea6 \u5269\u4f59\u65f6\u95f4", None))
-        self.pushButton_tgbb.setText(QCoreApplication.translate("Form", u"\u8df3\u8fc7\u7248\u672c", None))
-        self.pushButton_azgx.setText(QCoreApplication.translate("Form", u"\u5b89\u88c5\u66f4\u65b0", None))
-        self.pushButton_ok.setText(QCoreApplication.translate("Form", u"\u786e\u5b9a", None))
+        self.btn_tgbb.setText(QCoreApplication.translate("Form", u"\u8df3\u8fc7\u7248\u672c", None))
+        self.btn_azgx.setText(QCoreApplication.translate("Form", u"\u5b89\u88c5\u66f4\u65b0", None))
+        self.btn_ok.setText(QCoreApplication.translate("Form", u"\u786e\u5b9a", None))
     # retranslateUi
 
