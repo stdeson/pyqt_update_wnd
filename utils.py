@@ -25,8 +25,7 @@ def run_exe(exe_name, is_activate=False):
     kernel32.CloseHandle(process_info.hProcess)
     return True
     
-    
-def calculate_md5(file_path):
+def calculate_file_md5(file_path):
     with open(file_path, "rb") as f:
         content = f.read()
         md5 = hashlib.md5(content).hexdigest()

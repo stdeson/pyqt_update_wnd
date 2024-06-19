@@ -6,7 +6,7 @@ from PySide2.QtCore import  QThread, Signal
 from PySide2.QtWidgets import QDialog, QMessageBox
 
 from .file_download_module import download_file
-from .utils import calculate_md5, file_remove
+from .utils import calculate_file_md5, file_remove
 from . import update_image_rc
 from .ui_winUpdate import Ui_Form
 
@@ -105,7 +105,7 @@ class WndUpdateSoftware(QDialog, Ui_Form):
             file_remove(patcher_zip_path)
             return
         # 校验压缩包md5
-        download_md5 = calculate_md5(patcher_zip_path)
+        download_md5 = calculate_file_md5(patcher_zip_path)
         print(f"计算出的md5: {download_md5}, 实际应该的md5: {self.md5}")
         if download_md5 != self.md5:
             self.label_zt.setText("补丁包下载不完整, 请重新下载")
