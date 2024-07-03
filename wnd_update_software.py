@@ -76,6 +76,9 @@ class WndUpdateSoftware(QDialog, Ui_Form):
             self.btn_ok.show()
             return
 
+        self.btn_azgx.show()
+        self.btn_tgbb.show()
+        self.btn_ok.hide()
         self.btn_azgx.setEnabled(True)
         self.btn_tgbb.setEnabled(True)
         self.label_2.setText("发现新版本")
