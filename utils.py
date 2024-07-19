@@ -2,6 +2,7 @@ import ctypes
 from ctypes import wintypes
 import hashlib
 import os
+import shutil
 
 
 def run_exe(exe_name, is_activate=False):
@@ -39,3 +40,30 @@ def path_exist(path: str):
 def file_remove(path: str):
     if path_exist(path):
         os.remove(path)
+        
+def copy_tree_safe(target_dir, source_dir):
+    try:
+        print("正在复制目录 '%s' 到 '%s'..." % (source_dir, target_dir))
+        if os.path.exists(target_dir):
+            print("目标目录 '%s' 已存在，正在删除..." % target_dir)
+            shutil.rmtree(target_dir)
+        shutil.copytree(source_dir, target_dir)
+        print("目录 '%s' 复制完成" % target_dir)
+        return True
+    except Exception as e:
+        print("shutil.copytree: ", e)
+        return False
+
+def remove_dir_safe(path):  
+    """  
+    安全删除目录，如果目录不存在则不会报错。  
+    :param path: 要删除的目录路径  
+    """  
+    if os.path.exists(path) and os.path.isdir(path):  
+        try:  
+            shutil.rmtree(path)  
+            print(f"目录 {path} 已成功删除。")  
+        except Exception as e:  
+            print(f"删除目录 {path} 时出错：{e}")  
+    else:  
+        print(f"目录 {path} 不存在。")  

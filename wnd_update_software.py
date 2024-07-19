@@ -6,7 +6,7 @@ from PySide2.QtCore import  QThread, Signal
 from PySide2.QtWidgets import QDialog, QMessageBox
 
 from .file_download_module import download_file
-from .utils import calculate_file_md5, file_remove
+from .utils import calculate_file_md5, copy_tree_safe, file_remove, remove_dir_safe
 from . import update_image_rc
 from .ui_winUpdate import Ui_Form
 
@@ -126,6 +126,15 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         #     zf.extractall(extract_folder_path)
         shutil.unpack_archive(patcher_zip_path, extract_folder_path)
         print("解压完成")
+        # 替换biz目录下的内容
+        print('正在替换biz目录下的内容...')
+        source_dir = 'patcher/biz'
+        target_dir =  './biz'
+        if os.path.exists(source_dir):  # 如果目标目录存在才拷贝目录过去
+            # 复制资源文件
+            if copy_tree_safe(target_dir, source_dir):
+                # 成功则删除source_dir
+                remove_dir_safe(source_dir)
         QMessageBox.information(self, "提示", "更新准备就绪, 请关闭软件后手动重启")
 
 
