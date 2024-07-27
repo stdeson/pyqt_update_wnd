@@ -117,6 +117,8 @@ class ThdDownloadFile(QThread):
 
     def run(self):
         self.edt.setText('开始下载')
+        # 如果之前的还在, 删除掉
+        file_remove(self.save_path)
         if self.download_url == None:
             print("请传入下载地址")
             return
