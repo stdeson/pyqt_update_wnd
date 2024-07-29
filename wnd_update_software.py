@@ -89,13 +89,13 @@ class WndUpdateSoftware(QDialog, Ui_Form):
             self.label_zt.setText("下载更新失败")
             file_remove(installer_path)
             return
-        # 校验md5
-        download_md5 = calculate_file_md5(installer_path)
-        print(f"计算出的md5: {download_md5}, 实际应该的md5: {self.md5}")
-        if download_md5 != self.md5:
-            self.label_zt.setText("安装包下载不完整, 请重新下载")
-            file_remove(installer_path)
-            return
+        # # 校验md5
+        # download_md5 = calculate_file_md5(installer_path)
+        # print(f"计算出的md5: {download_md5}, 实际应该的md5: {self.md5}")
+        # if download_md5 != self.md5:
+        #     self.label_zt.setText("安装包下载不完整, 请重新下载")
+        #     file_remove(installer_path)
+        #     return
         # 打开安装包
         XProcess.create_process(installer_path)
         QMessageBox.information(self, "提示", "更新准备就绪, 请关闭软件后直接安装")
