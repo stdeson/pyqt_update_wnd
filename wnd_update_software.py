@@ -136,7 +136,7 @@ class ThdDownloadFile(QThread):
 
         print("下载结果:", self.download_result)
         print("保存地址:", self.save_path)
-        self.edt.setText(f"补丁包下载完成")
+        self.edt.setText(f"安装包下载完成")
         self.sig_download_finish.emit(self.download_result, self.save_path)
 
     def refresh_ui(self, progress_percent, info):
