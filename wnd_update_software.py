@@ -51,8 +51,9 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         self.patcher_download_url = data.get('patcher_download_url')
         self.installer_download_url = data.get('installer_download_url')
         self.md5 = data.get('md5')
+        force_update = data.get('force_update', False)
 
-        if latest_version == self.client_version or latest_version == '':
+        if latest_version == self.client_version or latest_version == '' or not force_update:
             self.label_2.setText("你使用的是最新版本")
             self.btn_azgx.hide()
             self.btn_tgbb.hide()
