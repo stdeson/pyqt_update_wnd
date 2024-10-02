@@ -52,8 +52,9 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         self.installer_download_url = data.get('installer_download_url')
         self.md5 = data.get('md5')
         force_update = data.get('force_update', False)
-        
-        if latest_version == self.client_version or latest_version == '' or not force_update:
+        print(f'force_update:{force_update}')
+
+        if self.client_version >= latest_version or latest_version == '':
             self.label_2.setText("你使用的是最新版本")
             self.btn_azgx.hide()
             self.btn_tgbb.hide()
@@ -66,7 +67,8 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         self.btn_azgx.setEnabled(True)
         self.btn_tgbb.setEnabled(True)
         self.label_2.setText("发现新版本")
-        self.show()
+        if force_update:
+            self.show()
 
     def install_update(self):
         self.progressBar.show()
