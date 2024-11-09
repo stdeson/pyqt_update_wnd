@@ -7,7 +7,7 @@ from PySide2.QtWidgets import QDialog, QMessageBox
 from .file_download_module import download_file
 from .utils import calculate_file_md5, file_remove
 from . import update_image_rc
-from .ui_winUpdate import Ui_Form
+from .wnd_update import Ui_Form
 
 
 class WndUpdateSoftware(QDialog, Ui_Form):
@@ -42,11 +42,11 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         self.client_version = client_version
         latest_version = "查询中..."
         self.label_2.setText(latest_version)
-        self.label_bbh.setText(f'最新版本:{latest_version} 当前版本: {self.client_version}')
+        self.label_bbh.setText(f'最新版本:{latest_version}    当前版本: {self.client_version}')
 
     def on_resp_update(self, data: dict):
         latest_version = data.get('latest_version', '')
-        self.label_bbh.setText(f'最新版本:{latest_version} 当前版本: {self.client_version}')
+        self.label_bbh.setText(f'最新版本:{latest_version}    当前版本: {self.client_version}')
         self.textEdit.setPlainText(data.get('update_info'))
         self.patcher_download_url = data.get('patcher_download_url')
         self.installer_download_url = data.get('installer_download_url')
@@ -89,7 +89,8 @@ class WndUpdateSoftware(QDialog, Ui_Form):
     def on_download_file_finish(self, download_result, save_path):
         installer_path = save_path
         if not download_result:
-            self.label_zt.setText("下载更新失败")
+            self.label_zt.setText(
+                f'<html><head/><body><p><a href="{self.download_url}"><span style=" text-decoration: underline; color:#0000ff;">下载更新失败, 请点击这里打开浏览器下载</span></a></p></body></html>')
             file_remove(installer_path)
             return
         XProcess.create_process(installer_path)
@@ -124,6 +125,7 @@ class ThdDownloadFile(QThread):
             self.sig_refresh_process_bar.emit(progress_percent, info)
 
         try:
+            raise Exception("下载文件异常")  # TODO: 删掉
             download_file(self.download_url, self.save_path, callback)
             self.download_result = True
         except Exception as e:

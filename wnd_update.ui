@@ -80,7 +80,7 @@
         </font>
        </property>
        <property name="text">
-        <string>最新版本:2.0 当前版本:1.0</string>
+        <string>最新版本:2.0    当前版本:1.0</string>
        </property>
       </widget>
      </item>
@@ -129,6 +129,9 @@ p, li { white-space: pre-wrap; }
       <widget class="QLabel" name="label_zt">
        <property name="text">
         <string>文件大小 下载速度 剩余时间</string>
+       </property>
+       <property name="openExternalLinks">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

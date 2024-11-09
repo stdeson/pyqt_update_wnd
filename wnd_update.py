@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_winUpdate.ui'
+## Form generated from reading UI file 'wnd_update.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -89,6 +89,7 @@ class Ui_Form(object):
 
         self.label_zt = QLabel(Form)
         self.label_zt.setObjectName(u"label_zt")
+        self.label_zt.setOpenExternalLinks(True)
 
         self.verticalLayout.addWidget(self.label_zt)
 
@@ -137,7 +138,7 @@ class Ui_Form(object):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"\u8f6f\u4ef6\u66f4\u65b0", None))
         self.label.setText("")
         self.label_2.setText(QCoreApplication.translate("Form", u"\u53d1\u73b0\u65b0\u7248\u672c", None))
-        self.label_bbh.setText(QCoreApplication.translate("Form", u"\u6700\u65b0\u7248\u672c:2.0 \u5f53\u524d\u7248\u672c:1.0", None))
+        self.label_bbh.setText(QCoreApplication.translate("Form", u"\u6700\u65b0\u7248\u672c:2.0    \u5f53\u524d\u7248\u672c:1.0", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"\u7248\u672c\u63cf\u8ff0", None))
         self.textEdit.setHtml(QCoreApplication.translate("Form", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
