@@ -90,7 +90,7 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         installer_path = save_path
         if not download_result:
             self.label_zt.setText(
-                f'<html><head/><body><p><a href="{self.download_url}"><span style=" text-decoration: underline; color:#0000ff;">下载更新失败, 请点击这里打开浏览器下载</span></a></p></body></html>')
+                f'<html><head/><body><p><a href="{self.installer_download_url}"><span style=" text-decoration: underline; color:#0000ff;">下载更新失败, 请点击这里打开浏览器下载(直接安装即可)</span></a></p></body></html>')
             file_remove(installer_path)
             return
         XProcess.create_process(installer_path)
@@ -125,7 +125,6 @@ class ThdDownloadFile(QThread):
             self.sig_refresh_process_bar.emit(progress_percent, info)
 
         try:
-            raise Exception("下载文件异常")  # TODO: 删掉
             download_file(self.download_url, self.save_path, callback)
             self.download_result = True
         except Exception as e:
