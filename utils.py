@@ -69,7 +69,7 @@ def remove_dir_safe(path):
         print(f"目录 {path} 不存在。")  
         
 
-def compare_versions(v1: str, v2: str) -> bool:
+def compare_versions(v1: str, v2: str) -> int:
     """
     比较版本号：
       返回 1 ：v1 > v2
@@ -92,7 +92,7 @@ def compare_versions(v1: str, v2: str) -> bool:
 
     for a, b in zip(p1, p2):
         if a > b:
-            return True
+            return 1
         if a < b:
-            return False
-    return False
+            return -1
+    return 0

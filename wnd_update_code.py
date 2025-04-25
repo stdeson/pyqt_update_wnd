@@ -54,7 +54,7 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         force_update = data.get('force_update', False)
         print(f'force_update:{force_update}')
 
-        if compare_versions(self.client_version, latest_version) or latest_version == '':
+        if compare_versions(self.client_version, latest_version) >= 0 or latest_version == '':
             self.label_2.setText("你使用的是最新版本")
             self.btn_azgx.hide()
             self.btn_tgbb.hide()
