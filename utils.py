@@ -67,3 +67,32 @@ def remove_dir_safe(path):
             print(f"删除目录 {path} 时出错：{e}")  
     else:  
         print(f"目录 {path} 不存在。")  
+        
+
+def compare_versions(v1: str, v2: str) -> bool:
+    """
+    比较版本号：
+      返回 1 ：v1 > v2
+      返回 0 ：v1 == v2
+      返回 -1：v1 < v2
+    支持前缀 'v' 或 'V'，不足位补 0 比较
+    """
+    def norm(v):
+        # 去掉前缀并切分
+        v = v.lstrip('vV')
+        parts = [int(x) for x in v.split('.')]
+        return parts
+
+    p1 = norm(v1)
+    p2 = norm(v2)
+    # 对齐长度，不足补0
+    n = max(len(p1), len(p2))
+    p1 += [0] * (n - len(p1))
+    p2 += [0] * (n - len(p2))
+
+    for a, b in zip(p1, p2):
+        if a > b:
+            return True
+        if a < b:
+            return False
+    return False

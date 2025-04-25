@@ -5,7 +5,7 @@ from PySide2.QtCore import  QThread, Signal
 from PySide2.QtWidgets import QDialog, QMessageBox
 
 from .file_download_module import download_file
-from .utils import calculate_file_md5, file_remove
+from .utils import calculate_file_md5, file_remove, compare_versions
 from . import update_image_rc
 from .wnd_update import Ui_Form
 
@@ -54,7 +54,7 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         force_update = data.get('force_update', False)
         print(f'force_update:{force_update}')
 
-        if self.client_version >= latest_version or latest_version == '':
+        if compare_versions(self.client_version, latest_version) or latest_version == '':
             self.label_2.setText("你使用的是最新版本")
             self.btn_azgx.hide()
             self.btn_tgbb.hide()
