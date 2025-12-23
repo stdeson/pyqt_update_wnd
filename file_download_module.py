@@ -2,8 +2,7 @@ import requests
 import time
 
 def download_file(url, save_path, callback_func=None):
-    if callback_func:
-        start_time = time.time()
+    start_time = time.time()
     print('开始下载:', url)
     r = requests.get(url, stream=True, verify=False, proxies={  # 忽略系统代理
         'http': None,
