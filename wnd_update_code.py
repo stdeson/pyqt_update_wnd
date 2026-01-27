@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 from memwin import XProcess
 from PySide2.QtCore import  QThread, Signal
@@ -93,7 +94,26 @@ class WndUpdateSoftware(QDialog, Ui_Form):
                 f'<html><head/><body><p><a href="{self.installer_download_url}"><span style=" text-decoration: underline; color:#0000ff;">下载更新失败, 请点击这里打开浏览器下载(直接安装即可)</span></a></p></body></html>')
             file_remove(installer_path)
             return
-        XProcess.create_process(installer_path)
+        
+        # 使用批处理脚本启动安装包，避免被杀软拦截
+        bat_content = f'''@echo off
+timeout /t 3 /nobreak >nul
+start "" "{installer_path}"
+del "%~f0"
+'''
+        bat_path = os.path.join(os.environ['TEMP'], 'ql_update.bat')
+        try:
+            with open(bat_path, 'w', encoding='gbk') as f:
+                f.write(bat_content)
+            # 后台启动批处理脚本，不等待
+            subprocess.Popen(['cmd', '/c', bat_path],
+                           creationflags=subprocess.CREATE_NO_WINDOW)
+            self.label_zt.setText('更新包准备完成，软件即将关闭并自动安装...')
+        except Exception as e:
+            print(f"创建批处理脚本失败: {e}")
+            # 降级方案：直接启动安装包
+            XProcess.create_process(installer_path)
+        
         self.sig_update_finish.emit()
         
 
@@ -110,7 +130,7 @@ class ThdDownloadFile(QThread):
         self.edt = kwargs.get('edt')
         self.process_bar = kwargs.get('process_bar')
         self.sig_refresh_process_bar.connect(self.refresh_ui)
-        self.save_path = os.path.join(os.environ['USERPROFILE'], 'Downloads', 'qlinstaller.exe')
+        self.save_path = os.path.join('C:/TEMP', 'qlinstaller.exe')
 
     def run(self):
         self.edt.setText('开始下载')
