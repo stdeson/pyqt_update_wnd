@@ -1,5 +1,6 @@
 import os
 import subprocess
+from urllib.parse import urlparse
 
 from memwin import XProcess
 from PySide2.QtCore import  QThread, Signal
@@ -9,6 +10,25 @@ from .file_download_module import download_file
 from .utils import calculate_file_md5, file_remove, compare_versions
 from . import update_image_rc
 from .wnd_update import Ui_Form
+
+
+BACKUP_CDN_BASE_URL = 'http://ytdownload.soult.cn'
+OFFICIAL_WEBSITE_URL = 'https://yt.soult.cn'
+DOWNLOAD_CONNECT_TIMEOUT_SECONDS = 3
+DOWNLOAD_READ_TIMEOUT_SECONDS = 5
+
+
+def build_backup_download_url(primary_url: str) -> str:
+    if not primary_url:
+        return ''
+    try:
+        parsed = urlparse(primary_url)
+        if not parsed.path:
+            return ''
+        return f"{BACKUP_CDN_BASE_URL.rstrip('/')}{parsed.path}"
+    except Exception as e:
+        print(f"构建备用下载链接失败: {e}")
+        return ''
 
 
 class WndUpdateSoftware(QDialog, Ui_Form):
@@ -78,8 +98,10 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         self.btn_azgx.setEnabled(False)
         self.btn_tgbb.setEnabled(False)
 
+        fallback_download_url = build_backup_download_url(self.installer_download_url)
+
         self.thd_download_file = ThdDownloadFile(
-            download_url=self.installer_download_url,
+            download_urls=[u for u in [self.installer_download_url, fallback_download_url] if u],
             wnd=self,
             edt=self.label_zt,
             process_bar=self.progressBar,
@@ -91,7 +113,7 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         installer_path = save_path
         if not download_result:
             self.label_zt.setText(
-                f'<html><head/><body><p><a href="{self.installer_download_url}"><span style=" text-decoration: underline; color:#0000ff;">下载更新失败, 请点击这里打开浏览器下载(直接安装即可)</span></a></p></body></html>')
+                f'<html><head/><body><p><a href="{OFFICIAL_WEBSITE_URL}"><span style=" text-decoration: underline; color:#0000ff;">下载更新失败, 请到官网下载(直接覆盖安装, 不需要卸载)</span></a></p></body></html>')
             file_remove(installer_path)
             return
         
@@ -126,7 +148,7 @@ class ThdDownloadFile(QThread):
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.wnd = kwargs.get('wnd')
-        self.download_url = kwargs.get('download_url')
+        self.download_urls = kwargs.get('download_urls') or []
         self.edt = kwargs.get('edt')
         self.process_bar = kwargs.get('process_bar')
         self.sig_refresh_process_bar.connect(self.refresh_ui)
@@ -136,24 +158,40 @@ class ThdDownloadFile(QThread):
         self.edt.setText('开始下载')
         # 如果之前的还在, 删除掉
         file_remove(self.save_path)
-        if self.download_url == None:
+        if not self.download_urls:
             print("请传入下载地址")
+            self.sig_download_finish.emit(False, self.save_path)
             return
 
         def callback(progress_percent, already_download_size, file_size, download_rate, time_left):
             info = f"文件大小 {file_size}MB, 速度 {download_rate}MB/s, 剩余时间 {time_left}秒"
             self.sig_refresh_process_bar.emit(progress_percent, info)
 
-        try:
-            download_file(self.download_url, self.save_path, callback)
-            self.download_result = True
-        except Exception as e:
-            print(f"下载文件异常: {e}")
-            self.download_result = False
+        self.download_result = False
+        for idx, url in enumerate(self.download_urls):
+            if idx == 0:
+                self.edt.setText('使用主线路下载中...')
+            else:
+                self.edt.setText('主线路失败，切换备用线路下载中...')
+
+            try:
+                download_file(
+                    url,
+                    self.save_path,
+                    callback,
+                    timeout=(DOWNLOAD_CONNECT_TIMEOUT_SECONDS, DOWNLOAD_READ_TIMEOUT_SECONDS),
+                )
+                self.download_result = True
+                print(f"下载成功: {url}")
+                break
+            except Exception as e:
+                print(f"下载文件异常({url}): {e}")
+                file_remove(self.save_path)
 
         print("下载结果:", self.download_result)
         print("保存地址:", self.save_path)
-        self.edt.setText(f"安装包下载完成")
+        if self.download_result:
+            self.edt.setText('安装包下载完成')
         self.sig_download_finish.emit(self.download_result, self.save_path)
 
     def refresh_ui(self, progress_percent, info):
