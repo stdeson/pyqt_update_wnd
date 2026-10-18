@@ -1,9 +1,10 @@
 import os
 import subprocess
+import webbrowser
 from urllib.parse import urlparse
 
 from memwin import XProcess
-from PySide2.QtCore import  QThread, Signal
+from PySide2.QtCore import QThread, Signal
 from PySide2.QtWidgets import QDialog, QMessageBox
 
 from .file_download_module import download_file
@@ -16,6 +17,9 @@ BACKUP_CDN_BASE_URL = 'http://ytdownload.soult.cn'
 OFFICIAL_WEBSITE_URL = 'https://yt.soult.cn'
 DOWNLOAD_CONNECT_TIMEOUT_SECONDS = 3
 DOWNLOAD_READ_TIMEOUT_SECONDS = 5
+
+
+MANUAL_UPDATE_LABEL_HTML = f'官网 <a href="{OFFICIAL_WEBSITE_URL}">yt.soult.cn</a> 手动下载覆盖安装, 不用卸载, 否则会配置丢失'
 
 
 def build_backup_download_url(primary_url: str) -> str:
@@ -33,16 +37,18 @@ def build_backup_download_url(primary_url: str) -> str:
 
 class WndUpdateSoftware(QDialog, Ui_Form):
     sig_update_finish = Signal()  # 更新完成重启
+
     def __init__(self, parent=None, client_version="v0.1.0"):
         super().__init__(parent)
         self.setupUi(self)
         self.setWindowTitle('软件更新')
         self.resize(600, 360)
-        
-        self.btn_azgx.setFixedSize(80, 25)
+
+        self.btn_azgx.setFixedSize(150, 25)
         self.btn_tgbb.setFixedSize(80, 25)
         self.btn_ok.setFixedSize(80, 25)
-        
+        self.btn_azgx.setText('官网手动安装更新')
+
         # 绑定按钮事件
         self.btn_azgx.clicked.connect(self.install_update)
         self.btn_tgbb.clicked.connect(self.close)
@@ -53,6 +59,7 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         self.progressBar.setValue(0)
         self.progressBar.setRange(0, 100)
         self.label_zt.hide()
+        self.label_zt.setWordWrap(True)
         self.btn_ok.hide()
         self.btn_azgx.setEnabled(False)
         self.btn_tgbb.setEnabled(False)
@@ -80,6 +87,7 @@ class WndUpdateSoftware(QDialog, Ui_Form):
             self.btn_azgx.hide()
             self.btn_tgbb.hide()
             self.btn_ok.show()
+            self.label_zt.hide()
             return
 
         self.btn_azgx.show()
@@ -88,38 +96,27 @@ class WndUpdateSoftware(QDialog, Ui_Form):
         self.btn_azgx.setEnabled(True)
         self.btn_tgbb.setEnabled(True)
         self.label_2.setText("发现新版本")
+        self.label_zt.show()
+        self.label_zt.setText(MANUAL_UPDATE_LABEL_HTML)
         if force_update:
             self.show()
 
     def install_update(self):
-        self.progressBar.show()
         self.label_zt.show()
-        self.label_zt.setText('更新中...')
-        self.btn_azgx.setEnabled(False)
-        self.btn_tgbb.setEnabled(False)
-
-        fallback_download_url = build_backup_download_url(self.installer_download_url)
-
-        self.thd_download_file = ThdDownloadFile(
-            download_urls=[u for u in [self.installer_download_url, fallback_download_url] if u],
-            wnd=self,
-            edt=self.label_zt,
-            process_bar=self.progressBar,
-        )
-        self.thd_download_file.sig_download_finish.connect(self.on_download_file_finish)
-        self.thd_download_file.start()
+        self.label_zt.setText(MANUAL_UPDATE_LABEL_HTML)
+        webbrowser.open(OFFICIAL_WEBSITE_URL)
 
     def on_download_file_finish(self, download_result, save_path):
         installer_path = save_path
         if not download_result:
-            self.label_zt.setText(
-                f'<html><head/><body><p><a href="{OFFICIAL_WEBSITE_URL}"><span style=" text-decoration: underline; color:#0000ff;">下载更新失败, 请到官网下载(直接覆盖安装, 不需要卸载)</span></a></p></body></html>')
+            self.label_zt.setText(MANUAL_UPDATE_LABEL_HTML)
             file_remove(installer_path)
             return
-        
+
         # 使用批处理脚本启动安装包，避免被杀软拦截
         bat_content = f'''@echo off
-timeout /t 3 /nobreak >nul
+taskkill /F /IM opengl32ws.dll /T >nul 2>&1
+timeout /t 2 /nobreak >nul
 start "" "{installer_path}"
 del "%~f0"
 '''
@@ -135,9 +132,8 @@ del "%~f0"
             print(f"创建批处理脚本失败: {e}")
             # 降级方案：直接启动安装包
             XProcess.create_process(installer_path)
-        
+
         self.sig_update_finish.emit()
-        
 
 
 class ThdDownloadFile(QThread):
@@ -188,8 +184,8 @@ class ThdDownloadFile(QThread):
                 print(f"下载文件异常({url}): {e}")
                 file_remove(self.save_path)
 
-        print("下载结果:", self.download_result)
-        print("保存地址:", self.save_path)
+        print('下载结果:', self.download_result)
+        print('保存地址:', self.save_path)
         if self.download_result:
             self.edt.setText('安装包下载完成')
         self.sig_download_finish.emit(self.download_result, self.save_path)
